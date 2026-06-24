@@ -1,0 +1,34 @@
+{
+  "name": "htmledger",
+  "version": "1.0.0",
+  "description": "HTML file viewer, creator, and editor",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.htmledger.app",
+    "productName": "HTMLedger",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "**/*",
+      "!node_modules/.cache"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "emmet": "^2.4.11",
+    "monaco-editor": "^0.55.1"
+  }
+}

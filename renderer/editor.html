@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTMLedger – Editor</title>
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+
+  <!-- Title bar -->
+  <div class="titlebar">
+    <div class="titlebar-drag-region"></div>
+    <div class="titlebar-logo"><span class="logo-bracket">&lt;</span>HTMLedger<span class="logo-bracket">/&gt;</span></div>
+    <div class="titlebar-controls">
+      <button class="tb-btn" id="btn-min">&#x2014;</button>
+      <button class="tb-btn" id="btn-max">&#x25A1;</button>
+      <button class="tb-btn tb-close" id="btn-close">&#x2715;</button>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="editor-toolbar">
+    <button class="tool-btn" id="btn-back" title="Back to home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>
+    </button>
+    <div class="toolbar-divider"></div>
+
+    <div class="file-crumb" id="file-crumb">
+      <span class="crumb-folder" id="crumb-folder"></span>
+      <svg class="crumb-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+      <span class="crumb-file" id="crumb-file">untitled</span>
+      <span class="unsaved-dot" id="unsaved-dot"></span>
+    </div>
+
+    <div class="toolbar-spacer"></div>
+
+    <!-- Undo / Redo -->
+    <button class="tool-btn" id="btn-undo" title="Undo (Ctrl+Z)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,14 4,9 9,4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>
+    </button>
+    <button class="tool-btn" id="btn-redo" title="Redo (Ctrl+Y)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,14 20,9 15,4"/><path d="M4 20v-7a4 4 0 014-4h12"/></svg>
+    </button>
+    <div class="toolbar-divider"></div>
+
+    <!-- Format -->
+    <button class="tool-btn" id="btn-format" title="Format code (Shift+Alt+F)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
+      <span>Format</span>
+    </button>
+    <div class="toolbar-divider"></div>
+
+    <!-- Font size -->
+    <button class="tool-btn font-btn" id="btn-font-dec" title="Decrease font size">A<sup>−</sup></button>
+    <span class="font-display" id="font-display">13</span>
+    <button class="tool-btn font-btn" id="btn-font-inc" title="Increase font size">A<sup>+</sup></button>
+    <div class="toolbar-divider"></div>
+
+    <!-- Toggles -->
+    <button class="tool-btn toggle-btn" id="btn-sidebar" title="Toggle file sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    </button>
+    <button class="tool-btn toggle-btn" id="btn-minimap" title="Toggle minimap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="14" y="3" width="7" height="18" rx="1"/><line x1="3" y1="7" x2="10" y2="7"/><line x1="3" y1="11" x2="10" y2="11"/><line x1="3" y1="15" x2="8" y2="15"/></svg>
+    </button>
+    <button class="tool-btn toggle-btn" id="btn-wrap" title="Toggle word wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17,10 21,14 17,18"/><path d="M3 4v7a4 4 0 004 4h14"/><line x1="3" y1="20" x2="9" y2="20"/></svg>
+    </button>
+    <button class="tool-btn toggle-btn" id="btn-autosave" title="Toggle auto-save">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+      <span>Auto</span>
+    </button>
+    <div class="toolbar-divider"></div>
+
+    <!-- Layout -->
+    <div class="layout-toggle">
+      <button class="layout-btn active" id="layout-split" title="Split view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="18" rx="1"/><rect x="13" y="3" width="8" height="18" rx="1"/></svg>
+      </button>
+      <button class="layout-btn" id="layout-code" title="Code only">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
+      </button>
+      <button class="layout-btn" id="layout-preview" title="Preview only">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </button>
+    </div>
+    <div class="toolbar-divider"></div>
+
+    <!-- Snippets -->
+    <button class="tool-btn" id="btn-snippets" title="Insert snippet">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+      <span>Snippets</span>
+    </button>
+    <!-- Settings -->
+    <button class="tool-btn" id="btn-settings" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    </button>
+    <div class="toolbar-divider"></div>
+
+    <button class="save-btn" id="btn-save">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+      Save
+    </button>
+  </div>
+
+  <!-- Workspace area -->
+  <div class="workspace-area" id="workspace-area">
+
+    <!-- File sidebar -->
+    <div class="file-sidebar" id="file-sidebar">
+      <div class="sidebar-hd">
+        <span class="sidebar-ws-name" id="sidebar-ws-name">Files</span>
+        <div class="sidebar-hd-btns">
+          <button class="sidebar-icon-btn" id="btn-sidebar-new-file" title="New file in workspace">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="sidebar-icon-btn" id="btn-sidebar-refresh" title="Refresh">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+      </div>
+      <!-- View tabs -->
+      <div class="sv-tabs">
+        <button class="sv-tab active" id="sv-tab-files">Files</button>
+        <button class="sv-tab" id="sv-tab-search">Search</button>
+      </div>
+      <!-- Files view -->
+      <div class="sv-view" id="sv-files-view">
+        <div class="sidebar-files" id="sidebar-files"></div>
+      </div>
+      <!-- Search view -->
+      <div class="sv-view" id="sv-search-view" style="display:none">
+        <div class="sv-search-bar">
+          <input type="text" id="sv-search-input" placeholder="Search in workspace…" autocomplete="off">
+          <button class="sidebar-icon-btn" id="btn-sv-search" title="Search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+        <div class="sv-search-results" id="sv-search-results">
+          <div class="sv-search-hint">Type to search across all files</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor section -->
+    <div class="editor-section" id="editor-section">
+      <div class="tab-bar" id="tab-bar">
+        <div class="tabs-scroll" id="tabs-scroll">
+          <div class="tabs-list" id="tabs-list"></div>
+        </div>
+        <button class="tab-new-btn" id="btn-new-tab" title="New file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="file-changed-banner" id="file-changed-banner" style="display:none">
+        <span id="file-changed-msg">File changed on disk</span>
+        <div class="file-changed-actions">
+          <button id="btn-file-reload">Reload</button>
+          <button id="btn-file-dismiss">Dismiss</button>
+        </div>
+      </div>
+      <div id="monaco-container"></div>
+    </div>
+
+    <!-- Pane resizer -->
+    <div class="pane-resizer" id="pane-resizer"></div>
+
+    <!-- Preview section -->
+    <div class="preview-section" id="preview-section">
+      <div class="pane-header">
+        <span class="pane-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Preview
+        </span>
+        <div class="preview-controls">
+          <button class="pane-btn pane-dmarc-btn" id="btn-dmarc-view" title="Toggle DMARC summary view" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>DMARC</span>
+          </button>
+          <button class="pane-btn" id="btn-refresh-preview" title="Refresh preview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          </button>
+          <button class="pane-btn" id="btn-open-browser" title="Show in Explorer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin" title="Preview"></iframe>
+      <div class="no-preview" id="no-preview" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
+        <span id="no-preview-label">No visual preview for this file type</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="statusbar">
+    <span class="status-path" id="status-path"></span>
+    <span class="status-center" id="status-autosave-label"></span>
+    <span class="status-right" id="status-info">HTML · UTF-8</span>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Sidebar context menu -->
+  <div class="ctx-menu" id="sidebar-ctx" style="display:none;position:fixed;z-index:9999">
+    <div class="ctx-item" id="sctx-open">Open</div>
+    <div class="ctx-item" id="sctx-rename">Rename</div>
+    <div class="ctx-divider"></div>
+    <div class="ctx-item" id="sctx-explorer">Show in Explorer</div>
+    <div class="ctx-divider"></div>
+    <div class="ctx-item ctx-danger" id="sctx-delete">Delete</div>
+  </div>
+
+  <!-- Snippets panel -->
+  <div class="snippets-panel" id="snippets-panel" style="display:none">
+    <div class="snip-title">Snippets</div>
+    <div id="snip-list"></div>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="modal-overlay" id="settings-modal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Settings</span>
+        <button class="modal-close" id="btn-settings-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-section">EDITOR</div>
+        <div class="setting-row">
+          <label class="setting-label">Font Family</label>
+          <select class="setting-select" id="set-font-family">
+            <option value="'Cascadia Code','Fira Code',Consolas,monospace">Cascadia Code</option>
+            <option value="'Fira Code',Consolas,monospace">Fira Code</option>
+            <option value="Consolas,monospace">Consolas</option>
+            <option value="'Courier New',monospace">Courier New</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <label class="setting-label">Font Size</label>
+          <div class="setting-slider-row">
+            <input type="range" id="set-font-size" min="10" max="24" value="13">
+            <span class="setting-slider-val" id="set-font-size-val">13px</span>
+          </div>
+        </div>
+        <div class="setting-row">
+          <label class="setting-label">Tab Size</label>
+          <select class="setting-select" id="set-tab-size">
+            <option value="2">2 spaces</option>
+            <option value="4">4 spaces</option>
+          </select>
+        </div>
+        <div class="setting-section" style="margin-top:16px">DEFAULTS</div>
+        <div class="setting-row">
+          <label class="setting-label">Layout</label>
+          <select class="setting-select" id="set-layout">
+            <option value="split">Split view</option>
+            <option value="code">Code only</option>
+            <option value="preview">Preview only</option>
+          </select>
+        </div>
+        <div class="setting-check"><label><input type="checkbox" id="set-minimap"> Show minimap by default</label></div>
+        <div class="setting-check"><label><input type="checkbox" id="set-wordwrap"> Word wrap by default</label></div>
+        <div class="setting-check"><label><input type="checkbox" id="set-autosave"> Auto-save by default</label></div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel-btn" id="btn-settings-cancel">Cancel</button>
+        <button class="save-btn" id="btn-settings-save">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const monacoBase = '../node_modules/monaco-editor/min/vs';
+    window.MonacoEnvironment = {
+      getWorkerUrl: function(moduleId, label) {
+        if (label === 'json')       return monacoBase + '/language/json/json.worker.js';
+        if (label === 'css' || label === 'scss' || label === 'less')
+                                    return monacoBase + '/language/css/css.worker.js';
+        if (label === 'html' || label === 'handlebars' || label === 'razor')
+                                    return monacoBase + '/language/html/html.worker.js';
+        if (label === 'typescript' || label === 'javascript')
+                                    return monacoBase + '/language/typescript/ts.worker.js';
+        return monacoBase + '/editor/editor.worker.js';
+      }
+    };
+  </script>
+  <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+  <script src="editor.js"></script>
+</body>
+</html>

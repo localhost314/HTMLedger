@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTMLedger</title>
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+  <!-- Custom title bar -->
+  <div class="titlebar" id="titlebar">
+    <div class="titlebar-drag-region"></div>
+    <div class="titlebar-logo">
+      <span class="logo-bracket">&lt;</span>HTMLedger<span class="logo-bracket">/&gt;</span>
+    </div>
+    <div class="titlebar-controls">
+      <button class="tb-btn" id="btn-min" title="Minimize">&#x2014;</button>
+      <button class="tb-btn" id="btn-max" title="Maximize">&#x25A1;</button>
+      <button class="tb-btn tb-close" id="btn-close" title="Close">&#x2715;</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">NAVIGATE</div>
+      <button class="sidebar-btn active" id="nav-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+        Home
+      </button>
+    </div>
+
+    <!-- Workspace section — hidden when on home screen -->
+    <div class="sidebar-section" id="sidebar-workspace" style="display:none">
+      <div class="sidebar-label">WORKSPACE</div>
+      <div class="workspace-name" id="workspace-name"></div>
+      <button class="sidebar-btn" id="nav-workspace-files">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        All Files
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">OPEN</div>
+      <button class="sidebar-btn" id="btn-open-folder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+        Open Folder
+      </button>
+      <button class="sidebar-btn" id="btn-open-file">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        Open File
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="sidebar-btn" id="btn-new-file-side">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New File
+      </button>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main">
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb" id="breadcrumb">
+          <span class="bc-home" id="bc-home">Home</span>
+          <svg class="bc-sep" id="bc-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none"><polyline points="9,18 15,12 9,6"/></svg>
+          <span class="bc-folder" id="bc-folder"></span>
+        </div>
+        <span class="file-count" id="file-count"></span>
+      </div>
+      <div class="topbar-right">
+        <div class="search-wrap" id="search-wrap" style="display:none">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="search-input" class="search-input" placeholder="Search files...">
+        </div>
+        <select class="sort-select" id="sort-select" style="display:none">
+          <option value="name-asc">Name A→Z</option>
+          <option value="name-desc">Name Z→A</option>
+          <option value="date-desc">Newest first</option>
+          <option value="date-asc">Oldest first</option>
+          <option value="size-desc">Largest first</option>
+          <option value="size-asc">Smallest first</option>
+          <option value="type">By type</option>
+        </select>
+        <div class="view-toggle">
+          <button class="view-btn active" id="view-grid" title="Grid view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </button>
+          <button class="view-btn" id="view-list" title="List view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+        </div>
+        <button class="create-btn" id="btn-new-file" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New File
+        </button>
+      </div>
+    </div>
+
+    <!-- Cards area -->
+    <div class="content-area" id="content-area">
+      <!-- Home landing -->
+      <div class="home-landing" id="home-landing">
+        <div class="landing-hero">
+          <div class="landing-logo">
+            <span class="logo-bracket">&lt;</span>HTMLedger<span class="logo-bracket">/&gt;</span>
+          </div>
+          <p class="landing-sub">Your HTML workspace</p>
+        </div>
+        <div class="landing-actions">
+          <button class="landing-action-btn" id="land-open-folder">
+            <div class="la-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            </div>
+            <div class="la-text">
+              <span class="la-title">Open Folder</span>
+              <span class="la-desc">Open a folder as a workspace</span>
+            </div>
+          </button>
+          <button class="landing-action-btn" id="land-open-file">
+            <div class="la-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            </div>
+            <div class="la-text">
+              <span class="la-title">Open File</span>
+              <span class="la-desc">Open a single HTML file</span>
+            </div>
+          </button>
+          <button class="landing-action-btn" id="land-new-file">
+            <div class="la-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="la-text">
+              <span class="la-title">New File</span>
+              <span class="la-desc">Create a new HTML file</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Recent workspaces -->
+        <div class="recent-section" id="recent-section" style="display:none">
+          <div class="recent-label">Recent Workspaces</div>
+          <div class="recent-list" id="recent-list"></div>
+        </div>
+        <!-- Recent files -->
+        <div class="recent-section" id="recent-files-section" style="display:none">
+          <div class="recent-label">Recent Files</div>
+          <div class="recent-list" id="recent-files-list"></div>
+        </div>
+      </div>
+
+      <!-- Workspace empty state -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-icon">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="15" width="45" height="55" rx="4" stroke="#4a4a6a" stroke-width="2.5"/>
+            <path d="M55 15l10 10v45a4 4 0 01-4 4H19" stroke="#4a4a6a" stroke-width="2.5"/>
+            <path d="M55 15v10h10" stroke="#4a4a6a" stroke-width="2.5"/>
+            <path d="M22 35h25M22 45h20M22 55h15" stroke="#6060a0" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h2>No HTML files in this folder</h2>
+        <p>Create a new file to get started</p>
+        <div class="empty-actions">
+          <button class="create-btn" id="empty-new-file">New File</button>
+        </div>
+      </div>
+
+      <!-- File grid -->
+      <div class="file-grid" id="file-grid" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- Context menu -->
+  <div class="context-menu" id="context-menu">
+    <div class="ctx-item" id="ctx-open">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Open in Editor
+    </div>
+    <div class="ctx-item" id="ctx-rename">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Rename
+    </div>
+    <div class="ctx-item" id="ctx-duplicate">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      Duplicate
+    </div>
+    <div class="ctx-item" id="ctx-explorer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      Show in Explorer
+    </div>
+    <div class="ctx-divider"></div>
+    <div class="ctx-item ctx-danger" id="ctx-delete">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+      Delete
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="home.js"></script>
+</body>
+</html>
